@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import axios from "axios";
+import io from "socket.io-client";
 
-function App() {
+const ENDPOINT = "http://localhost:3001"; // Địa chỉ máy chủ backend
+
+const App = () => {
+  const [messages, setMessages] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [response, setResponse] = useState("");
+
+  const triggerData = (msg) => {
+    console.log(msg);
+    setMessages(msg.answer);
+  };
+
+  useEffect(() => {
+    const socket = io(ENDPOINT);
+    socket.on("objectEmit", triggerData);
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/chat/create",
+        { prompt }
+      );
+      setResponse(response.data); // Cập nhật phản hồi từ backend
+    } catch (error) {
+      console.error("There was a problem with your fetch operation:", error);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Messages</h1>
+
+      <h1>Send Prompt to Backend</h1>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Prompt:
+          <input
+            type="text"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+          />
+        </label>
+        <button type="submit">Send</button>
+      </form>
+      <ReactMarkdown>{messages}</ReactMarkdown>
     </div>
   );
-}
+};
 
 export default App;

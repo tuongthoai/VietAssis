@@ -8,32 +8,27 @@ const ENDPOINT = "http://localhost:3001"; // Địa chỉ máy chủ backend
 
 const App = () => {
   const [chat, setChat] = useState([]);
-  const [isDivVisible, setDivVisible] = useState(false);
   const endOfMessagesRef = useRef(null);
   const inputRef = useRef();
 
-  const [messages, setMessages] = useState("");
+  // const [messages, setMessages] = useState("");
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
 
+  // const handleGreeting = (intro) => {
+  //   if(intro){
+  //     addObjectToArray("message-left", "Cảm ơn bạn đã sử dụng VietAssist. Chúng tôi có thể hỗ trợ bạn về chỉnh sửa văn bản.");
+  //   }
+  // };
+
   const triggerData = (msg) => {
     console.log(msg);
+    // setMessages(msg.answer);
     addObjectToArray("message-left", msg.answer);
-    setDivVisible(false);
   };
 
   useEffect(() => {
-    handleGreeting(true)
-    setDivVisible(false);
-  }, []);
-
-  const handleGreeting = (intro) => {
-    if(intro){
-      addObjectToArray("message-left", "Cảm ơn bạn đã sử dụng VietAssist. Chúng tôi có thể hỗ trợ bạn về chỉnh sửa văn bản.");
-    }
-  };
-
-  useEffect(() => {
+    // handleGreeting(true);
     const socket = io(ENDPOINT);
     socket.on("objectEmit", triggerData);
 
@@ -43,8 +38,8 @@ const App = () => {
   }, []);
 
   const handleSubmit = async (e) => {
+    handleClearClick();
     addObjectToArray("message-right", prompt);
-    setDivVisible(true);
     e.preventDefault();
 
     try {
@@ -72,6 +67,11 @@ const App = () => {
     setChat((prevChat) => [...prevChat, newObject]);
   };
 
+  const handleClearClick = () => {
+    document.getElementById("question").value = "";
+    setPrompt("");
+  };
+
   return (
     <>
     <div className="container">
@@ -79,10 +79,10 @@ const App = () => {
           <div className="message-container" style={{ overflow: "auto" }}>
             {chat.map((object) => (
               <div key={object.id} className={object.side}>
-                {object.text}
+                <ReactMarkdown>{object.text}</ReactMarkdown>
               </div>
             ))}
-
+          </div>
             <div className="question-container">
               <input
                 id="question"
@@ -101,7 +101,7 @@ const App = () => {
               > Gửi
               </button>
             </div>
-          </div>
+          {/* </div> */}
         </div>
         {/* <ReactMarkdown>{messages}</ReactMarkdown> */}
       </div>

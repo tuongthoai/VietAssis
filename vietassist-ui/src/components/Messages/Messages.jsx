@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Box, Stack } from '@mui/material'
 import { EmptyMessage, TextMsg, Timeline } from './MessageType';
 

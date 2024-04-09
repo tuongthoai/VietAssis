@@ -7,7 +7,7 @@ const TextMsg = ({ e }) => {
         <Stack direction={'row'} justifyContent={e.incoming ? 'start' : 'end'}>
             <Box
                 p={1.5}
-                sx={{ backgroundColor: e.incoming ? grey[50] : blue[700], width: 'max-content' }}
+                sx={{ backgroundColor: e.incoming ? grey[50] : blue[700], width: 'max-content', maxWidth: "750px" }}
                 borderRadius={1.5}>
                 <Typography variant='body2' color={e.incoming ? grey[900] : grey[50]}>
                     {e.message}

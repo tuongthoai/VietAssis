@@ -1,7 +1,10 @@
 import {
     Box, IconButton, InputAdornment, Stack, TextField,
     Toolbar, Typography, Modal, Card,
-    CardContent, CardActions, Button, Grid
+    CardContent, CardActions, Button, Grid,
+    Alert,
+    AlertTitle,
+    Chip
 } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import SendIcon from '@mui/icons-material/Send';
@@ -12,7 +15,8 @@ import './Conversation.css'
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import { useTheme } from '@emotion/react';
 import Messages from '../Messages/Messages';
-import { blue, lightBlue, grey } from '@mui/material/colors'
+import { blue, lightBlue, grey, red, yellow, amber } from '@mui/material/colors'
+import data from '../../data/vietassist.json'
 
 
 export default function Conversation() {
@@ -23,10 +27,23 @@ export default function Conversation() {
     const textFieldRef = useRef(null);
 
     const [openPrompt, setOpenPrompt] = useState(false);
+    const [prompt, setPrompt] = useState([]);
+    const [currentPrompt, setCurrentPrompt] = useState({});
 
     const emptyMsg = {
         type: "empty",
     }
+
+
+    useEffect(() => {
+        setChatHistory([...chatHistory, emptyMsg]);
+        setPrompt(data.prompt);
+    }, [])
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [chatHistory])
+
 
     const promptStyle = {
         position: 'absolute',
@@ -72,43 +89,57 @@ export default function Conversation() {
         }
     }
 
+    const handleUsePrompt = (p) => {
+        setCurrentPrompt(p);
+        setOpenPrompt(false);
+    }
+
     const renderPrompts = () => {
         const prompts = []
-        for (let i = 0; i < 10; i++) {
+
+        prompt.map((p) => {
             prompts.push(
-                <Grid item xs={3}>
-                    <Card key={i} sx={{ maxWidth: 345, padding: '10px', border: `2px solid ${blue[700]}` }}>
+                <Grid item xs={3} zeroMinWidth>
+                    <Card key={p.id} sx={{ maxWidth: 345, padding: '10px', border: `2px solid ${blue[700]}`, height: "300px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                         <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                Lizard
+                            <Typography sx={{ height: "50px" }} gutterBottom variant="h6" component="div">
+                                {p.name}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Lizards are a widespread group of squamate reptiles, with over 6,000
-                                species, ranging across all continents except Antarctica
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                marginTop={'20px'}>
+                                {p.content}
                             </Typography>
                         </CardContent>
                         <CardActions>
                             <Stack direction={'row'} justifyContent={'space-between'} width={'100%'}>
-                                <Button variant='contained' color='warning'>Use</Button>
-                                <IconButton aria-label="add to favorites">
-                                    <FavoriteIcon />
+                                <Button onClick={() => handleUsePrompt(p)} variant='contained' color='warning'>Use</Button>
+                                <IconButton onClick={() => handleFavoriteBtn(p.id)} aria-label="add to favorites">
+                                    <FavoriteIcon sx={{ color: p.isFavorite ? red[700] : grey[500] }} />
                                 </IconButton>
                             </Stack>
                         </CardActions>
                     </Card>
                 </Grid>
             )
-        }
+        })
         return prompts
     }
 
-    useEffect(() => {
-        setChatHistory([...chatHistory, emptyMsg]);
-    }, [])
+    const handleFavoriteBtn = (id) => {
+        const updatedPrompts = prompt.map((p) => {
+            if (p.id === id) {
+                return {
+                    ...p,
+                    isFavorite: !p.isFavorite
+                };
+            }
+            return p;
+        })
+        setPrompt(updatedPrompts);
+    }
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [chatHistory])
 
     return (
         <Stack sx={{ height: '100vh', flexGrow: 1, backgroundColor: blue[100] }}>
@@ -124,8 +155,15 @@ export default function Conversation() {
                 sx={{
                     width: '100%',
                     backgroundColor: "#F8FAFF",
-                    boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
+                    boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
                 }}>
+                {currentPrompt.name && (
+                    <Chip
+                        sx={{ marginBottom: '10px', backgroundColor: amber[200] }}
+                        label={currentPrompt.name}
+                        onDelete={() => setCurrentPrompt({})}
+                    />
+                )}
                 <Stack direction="row" alignItems={"center"} spacing={3}>
                     <TextField
                         fullWidth
@@ -135,7 +173,7 @@ export default function Conversation() {
                         InputProps={{
                             endAdornment:
                                 <InputAdornment>
-                                    <IconButton onClick={() => setOpenPrompt(true)}>
+                                    <IconButton color='warning' onClick={() => setOpenPrompt(true)}>
                                         <DocumentScannerIcon />
                                     </IconButton>
                                 </InputAdornment>

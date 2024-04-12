@@ -111,7 +111,7 @@ export default function Conversation() {
     }, [chatHistory])
 
     return (
-        <Stack sx={{ height: '100vh', flexGrow: 1, backgroundColor: lightBlue[50] }}>
+        <Stack sx={{ height: '100vh', flexGrow: 1, backgroundColor: blue[100] }}>
             <Toolbar />
             <Box
                 id='chat-window'

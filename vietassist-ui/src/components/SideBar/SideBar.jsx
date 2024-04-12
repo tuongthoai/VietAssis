@@ -28,6 +28,7 @@ export default function SideBar() {
                         width: drawerWidth,
                         boxSizing: 'border-box',
                     },
+                    backgroundColor: lightBlue[50],
                 }}
                 variant="permanent"
                 anchor="left"

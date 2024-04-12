@@ -1,38 +1,8 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const dotenv = require("dotenv");
-const { getIo } = require("../utils/socketio.js");
-
-dotenv.config();
-
-const genAI = new GoogleGenerativeAI(process.env.KEY_API_GEMINI);
-const modelGemini = genAI.getGenerativeModel({ model: "gemini-pro" });
+const { v4: uuidv4 } = require("uuid");
+const { answerGemini } = require("./gemini.service");
 
 exports.createNewMessage = async (prompt) => {
-  const io = await getIo();
-  const chatGemini = modelGemini.startChat({
-    generationConfig: {
-      temperature: 0.9,
-      topP: 1,
-      topK: 1,
-      maxOutputTokens: 4096,
-    },
-  });
-  let answer = ``;
-  const result = await chatGemini.sendMessageStream(prompt);
-  for await (const payload of result.stream) {
-    try {
-      const item = payload.text();
-      if (item) {
-        answer += item;
-        io.emit("objectEmit", {
-          answer: answer,
-        });
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-  return {
-    message: answer,
-  };
+  const messageId = uuidv4();
+  answerGemini(prompt, messageId);
+  return { messageId };
 };

@@ -23,14 +23,14 @@ export default function MainScreen() {
         setMessages(msg.answer);
     };
 
-    useEffect(() => {
-        const socket = io(ENDPOINT);
-        socket.on("objectEmit", triggerData);
+    // useEffect(() => {
+    //     const socket = io(ENDPOINT);
+    //     socket.on("objectEmit", triggerData);
 
-        return () => {
-            socket.disconnect();
-        };
-    }, []);
+    //     return () => {
+    //         socket.disconnect();
+    //     };
+    // }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

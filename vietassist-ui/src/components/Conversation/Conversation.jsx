@@ -1,10 +1,7 @@
 import {
     Box, IconButton, InputAdornment, Stack, TextField,
-    Toolbar, Typography, Modal, Card,
-    CardContent, CardActions, Button, Grid,
-    Alert,
-    AlertTitle,
-    Chip
+    Toolbar, Typography, Modal, Card, CardContent,
+    CardActions, Button, Grid, Chip
 } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import SendIcon from '@mui/icons-material/Send';
@@ -17,6 +14,12 @@ import { useTheme } from '@emotion/react';
 import Messages from '../Messages/Messages';
 import { blue, lightBlue, grey, red, yellow, amber } from '@mui/material/colors'
 import data from '../../data/vietassist.json'
+import axios from 'axios'
+import io from "socket.io-client";
+
+
+
+const ENDPOINT = "http://localhost:3001"; // Địa chỉ máy chủ backend
 
 
 export default function Conversation() {
@@ -30,19 +33,85 @@ export default function Conversation() {
     const [prompt, setPrompt] = useState([]);
     const [currentPrompt, setCurrentPrompt] = useState({});
 
+    const [responseMessage, setResopnseMessage] = useState("");
+    const [currentPos, setCurrentPos] = useState(0);
+    const [completeAnswer, setCompleteAnswer] = useState("");
+
     const emptyMsg = {
         type: "empty",
     }
+
+    const loader = {
+        type: 'loader',
+    }
+
+    const triggerData = (msg) => {
+        // console.log(msg.answer);
+        const answer_temp = msg.answer;
+        setResopnseMessage(answer_temp);
+        if (msg.completeAnswer !== null && msg.completeAnswer !== "") {
+            setCompleteAnswer(msg.completeAnswer);
+        }
+    };
+
+    useEffect(() => {
+        const resMessage = {
+            type: "msg",
+            message: completeAnswer,
+            incoming: true,
+            outgoing: false,
+            isLoading: false,
+        };
+        const updatedHistory = [...chatHistory];
+        updatedHistory[currentPos] = resMessage;
+        setChatHistory(updatedHistory);
+    }, [completeAnswer])
 
 
     useEffect(() => {
         setChatHistory([...chatHistory, emptyMsg]);
         setPrompt(data.prompt);
+
+        const socket = io(ENDPOINT);
+        socket.on('objectEmit', triggerData)
+        return () => {
+            socket.disconnect();
+        }
     }, [])
 
     useEffect(() => {
         scrollToBottom();
     }, [chatHistory])
+
+
+    useEffect(() => {
+        // console.log(responseMessage);
+        const resMessage = {
+            type: "msg",
+            message: responseMessage,
+            incoming: true,
+            outgoing: false,
+            isLoading: true,
+        };
+
+        // console.log(currentPos);
+        if (resMessage.message !== "") {
+            console.log(currentPos);
+            // console.log("is receiving response");
+            if (chatHistory[currentPos] === null) {
+                setChatHistory([...chatHistory, resMessage]);
+            } else {
+                const updatedHistory = [...chatHistory];
+                updatedHistory[currentPos] = resMessage;
+                setChatHistory(updatedHistory);
+            }
+            console.log(chatHistory);
+            // console.log(newMsg.message);
+        } else {
+
+
+        }
+    }, [responseMessage]);
 
 
     const promptStyle = {
@@ -62,7 +131,10 @@ export default function Conversation() {
         overflowX: 'hidden',
     };
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
+
+        setCurrentPos(chatHistory.length + 1);
+
         if (newMessage.trim() !== "") {
             const newMsg = {
                 type: "msg",
@@ -73,6 +145,16 @@ export default function Conversation() {
             setNewMessage("");
             setChatHistory([...chatHistory, newMsg]);
             textFieldRef.current.focus();
+        }
+
+        const body = {
+            "prompt": newMessage
+        }
+        try {
+            const response = await axios.post("http://localhost:3001/api/chat/create", body);
+        }
+        catch (error) {
+            console.log(error);
         }
     }
     const theme = useTheme();
@@ -148,7 +230,8 @@ export default function Conversation() {
                 id='chat-window'
                 ref={chatWindowRef}
                 sx={{ overflowY: 'scroll', height: '100vh' }}>
-                <Messages chatHistory={chatHistory} />
+                <Messages
+                    chatHistory={chatHistory} />
             </Box>
             <Box
                 p={2}

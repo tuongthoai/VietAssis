@@ -64,12 +64,11 @@ export default function MainScreen() {
         //     <ReactMarkdown>{messages}</ReactMarkdown>
         // </div> */}
 
-        <Stack direction={"row"}>
-            <SideBar />
-            <Conversation />
-        </Stack>
+        // <Stack>
+        //     <SideBar />
+        //     {/* <Conversation /> */}
+        // </Stack>
 
-
-
+        <SideBar />
     )
 }

@@ -1,14 +1,19 @@
 import React from 'react'
-import { Stack, Divider, Typography, Box, Skeleton } from '@mui/material'
+import {
+    Stack, Divider, Typography, Box, Skeleton,
+    Avatar
+} from '@mui/material'
 import { blue, grey } from '@mui/material/colors'
 import ReactMarkdown from 'react-markdown'
 
 const TextMsg = ({ e }) => {
     return (
-        <Stack direction={'row'} justifyContent={e.incoming ? 'start' : 'end'}>
+        <Stack direction={'row'} justifyContent={e.incoming ? 'start' : 'end'} alignItems={'center'}>
+            {e.incoming && <Avatar src='bot.png' sx={{ bgcolor: blue[700] }}>V</Avatar>}
             <Box
                 p={2}
-                sx={{ backgroundColor: e.incoming ? grey[200] : blue[900], width: 'max-content', maxWidth: "750px" }}
+                margin={'0 10px'}
+                sx={{ backgroundColor: e.incoming ? '#f0f4f9' : blue[900], width: 'max-content', maxWidth: "750px" }}
                 borderRadius={1.5}>
                 {e.incoming === false ? (
                     <Typography variant='body2' color={e.incoming ? grey[900] : grey[50]}>
@@ -19,7 +24,7 @@ const TextMsg = ({ e }) => {
                         <Typography
                             variant='body2'
                             paddingLeft={1}
-                            color={e.incoming ? grey[900] : grey[50]}
+                            color={e.incoming ? grey[700] : grey[50]}
                         >
                             <ReactMarkdown>{e.message}</ReactMarkdown>
                         </Typography>
@@ -35,6 +40,7 @@ const TextMsg = ({ e }) => {
                     </>
                 )}
             </Box>
+            {e.outgoing && <Avatar src='cat.png' sx={{ bgcolor: grey[50] }}>QA</Avatar>}
         </Stack>
     )
 }
@@ -52,7 +58,7 @@ const Timeline = ({ e }) => {
 
 const EmptyMessage = () => {
     return (
-        <Box sx={{ width: '100%', height: '450px' }}>
+        <Box sx={{ width: '100%', height: '450px', bgcolor: blue[700] }}>
         </Box>
     )
 }

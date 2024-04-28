@@ -41,10 +41,6 @@ export default function Conversation() {
         type: "empty",
     }
 
-    const loader = {
-        type: 'loader',
-    }
-
     const triggerData = (msg) => {
         // console.log(msg.answer);
         const answer_temp = msg.answer;
@@ -82,7 +78,6 @@ export default function Conversation() {
     useEffect(() => {
         scrollToBottom();
     }, [chatHistory])
-
 
     useEffect(() => {
         // console.log(responseMessage);
@@ -130,6 +125,8 @@ export default function Conversation() {
         overflowY: 'auto',
         overflowX: 'hidden',
     };
+
+    const minHeight = 64;
 
     const handleSendMessage = async () => {
 
@@ -224,12 +221,12 @@ export default function Conversation() {
 
 
     return (
-        <Stack sx={{ height: '100vh', flexGrow: 1, backgroundColor: blue[100] }}>
-            <Toolbar />
+        <Stack sx={{ backgroundColor: blue[100], width: '100%', height: `calc(100vh - ${minHeight}px)` }}>
+            {/* <Toolbar /> */}
             <Box
                 id='chat-window'
                 ref={chatWindowRef}
-                sx={{ overflowY: 'scroll', height: '100vh' }}>
+                sx={{ overflowY: 'scroll', height: '100%' }}>
                 <Messages
                     chatHistory={chatHistory} />
             </Box>

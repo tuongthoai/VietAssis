@@ -58,7 +58,13 @@ const Timeline = ({ e }) => {
 
 const EmptyMessage = () => {
     return (
-        <Box sx={{ width: '100%', height: '450px', bgcolor: blue[700] }}>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <Stack direction={'column'} alignItems={'center'}>
+                <img src='AIimage.jpg' width={'400px'} style={{ borderRadius: '20px' }} />
+                <Typography textAlign={'center'} pt={3} fontSize={'70px'} color={blue[900]} fontWeight={'bold'} letterSpacing={2}>
+                    Welcome to VietAssist!
+                </Typography>
+            </Stack>
         </Box>
     )
 }

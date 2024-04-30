@@ -16,14 +16,14 @@ import { blue, lightBlue, grey, red, yellow, amber } from '@mui/material/colors'
 import data from '../../data/vietassist.json'
 import axios from 'axios'
 import io from "socket.io-client";
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { addToChatHistory, replaceLastResponseMsg, setToNotLoading, updateChatHistory, updateCurrentPos } from '../../slice';
 
 const ENDPOINT = "http://localhost:3001"; // Địa chỉ máy chủ backend
 
 
 export default function Conversation() {
-    const [chatHistory, setChatHistory] = useState([]);
+    // const [chatHistory, setChatHistory] = useState([]);
     const [newMessage, setNewMessage] = useState('');
 
     const chatWindowRef = useRef(null);
@@ -36,6 +36,10 @@ export default function Conversation() {
     const [responseMessage, setResopnseMessage] = useState("");
     const [currentPos, setCurrentPos] = useState(0);
     const [completeAnswer, setCompleteAnswer] = useState("");
+
+    const temp = useSelector(state => state.chatHistory.value);
+    const currentPos_tmp = useSelector(state => state.chatHistory.currentPos);
+    const dispatch = useDispatch();
 
     const emptyMsg = {
         type: "empty",
@@ -58,16 +62,16 @@ export default function Conversation() {
             outgoing: false,
             isLoading: false,
         };
-        const updatedHistory = [...chatHistory];
-        updatedHistory[currentPos] = resMessage;
-        setChatHistory(updatedHistory);
+
+        if (completeAnswer !== '' && typeof completeAnswer !== 'undefined') {
+            dispatch(replaceLastResponseMsg(resMessage));
+        }
+
     }, [completeAnswer])
 
 
     useEffect(() => {
-        setChatHistory([...chatHistory, emptyMsg]);
         setPrompt(data.prompt);
-
         const socket = io(ENDPOINT);
         socket.on('objectEmit', triggerData)
         return () => {
@@ -77,10 +81,10 @@ export default function Conversation() {
 
     useEffect(() => {
         scrollToBottom();
-    }, [chatHistory])
+        console.log("temp \n", temp);
+    }, [temp])
 
     useEffect(() => {
-        // console.log(responseMessage);
         const resMessage = {
             type: "msg",
             message: responseMessage,
@@ -89,22 +93,18 @@ export default function Conversation() {
             isLoading: true,
         };
 
-        // console.log(currentPos);
         if (resMessage.message !== "") {
-            console.log(currentPos);
-            // console.log("is receiving response");
-            if (chatHistory[currentPos] === null) {
-                setChatHistory([...chatHistory, resMessage]);
+            console.log(currentPos_tmp);
+            console.log('chathis\n', temp);
+            // console.log(temp[currentPos_tmp]);
+            if (typeof temp[currentPos_tmp] === 'undefined') {
+                dispatch(addToChatHistory(resMessage));
             } else {
-                const updatedHistory = [...chatHistory];
-                updatedHistory[currentPos] = resMessage;
-                setChatHistory(updatedHistory);
+                const updatedHistory = [...temp];
+                updatedHistory[currentPos_tmp] = resMessage;
+                dispatch(updateChatHistory(updatedHistory));
             }
-            console.log(chatHistory);
-            // console.log(newMsg.message);
-        } else {
-
-
+            // console.log(chatHistory);
         }
     }, [responseMessage]);
 
@@ -129,8 +129,8 @@ export default function Conversation() {
     const minHeight = 64;
 
     const handleSendMessage = async () => {
-
-        setCurrentPos(chatHistory.length + 1);
+        // setCurrentPos(chatHistory.length + 1);
+        dispatch(updateCurrentPos(temp.length + 1));
 
         if (newMessage.trim() !== "") {
             const newMsg = {
@@ -140,7 +140,9 @@ export default function Conversation() {
                 outgoing: true
             };
             setNewMessage("");
-            setChatHistory([...chatHistory, newMsg]);
+            // setChatHistory([...chatHistory, newMsg]);
+            dispatch(addToChatHistory(newMsg));
+
             textFieldRef.current.focus();
         }
 
@@ -178,8 +180,8 @@ export default function Conversation() {
 
         prompt.map((p) => {
             prompts.push(
-                <Grid item xs={3} zeroMinWidth>
-                    <Card key={p.id} sx={{ maxWidth: 345, padding: '10px', border: `2px solid ${blue[700]}`, height: "300px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <Grid key={p.id} item xs={3} zeroMinWidth>
+                    <Card sx={{ maxWidth: 345, padding: '10px', border: `2px solid ${blue[700]}`, height: "300px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                         <CardContent>
                             <Typography sx={{ height: "50px" }} gutterBottom variant="h6" component="div">
                                 {p.name}
@@ -228,7 +230,7 @@ export default function Conversation() {
                 ref={chatWindowRef}
                 sx={{ overflowY: 'scroll', height: '100%' }}>
                 <Messages
-                    chatHistory={chatHistory} />
+                    chatHistory={temp} />
             </Box>
             <Box
                 p={2}
@@ -329,3 +331,4 @@ export default function Conversation() {
         </Stack>
     )
 }
+

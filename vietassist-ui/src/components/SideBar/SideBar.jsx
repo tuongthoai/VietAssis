@@ -3,7 +3,7 @@ import {
     ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar,
     Typography
 } from '@mui/material'
-import React, { useState } from 'react'
+import React from 'react'
 import InboxIcon from '@mui/icons-material/MoveToInbox'; // Import Inbox icon
 import MailIcon from '@mui/icons-material/Mail'; // Import Mail icon
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
@@ -15,86 +15,9 @@ import MuiAppBar from '@mui/material/AppBar';
 import Conversation from '../Conversation/Conversation';
 
 
-
 export default function SideBar() {
-    // const drawerWidth = 240;
-    // const [open, setOpen] = useState(true);
-    // const toggleMenu = () => {
-    //     setOpen(open ? false : true);
-    //     console.log(open);
-    // }
-    // const openMenu = () => {
-    //     setOpen(true);
-    // }
-    // const closeMenu = () => {
-    //     setOpen(false);
-    // }
-
-    // return (
-    //     <Box>
-    //         <AppBar
-    //             position="fixed"
-    //             sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, backgroundColor: lightBlue[900] }}
-    //         >
-    //             <Toolbar>
-    //                 <Button
-    //                     variant="contained"
-    //                     color={'warning'}
-    //                     onClick={toggleMenu}>
-    //                     <MenuOpenIcon />
-    //                 </Button>
-    //                 <Typography sx={{ textAlign: 'center', width: '100%', fontWeight: 'bold', letterSpacing: 4 }} color={grey[50]} variant="h4" component="div">
-    //                     VietAssist
-    //                 </Typography>
-    //             </Toolbar>
-    //         </AppBar>
-    //         <Drawer
-    //             sx={{
-    //                 width: drawerWidth,
-    //                 flexShrink: 0,
-    //                 '& .MuiDrawer-paper': {
-    //                     width: drawerWidth,
-    //                     boxSizing: 'border-box',
-    //                 },
-    //             }}
-    //             anchor="left"
-    //             open={open}
-    //         >
-    //             {/* <Toolbar />
-    //             <Divider /> */}
-    //             <Box sx={{ width: 250 }} role="presentation" onClick={toggleMenu}>
-    //                 <List>
-    //                     {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-    //                         <ListItem key={text} disablePadding>
-    //                             <ListItemButton>
-    //                                 <ListItemIcon>
-    //                                     {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-    //                                 </ListItemIcon>
-    //                                 <ListItemText primary={text} />
-    //                             </ListItemButton>
-    //                         </ListItem>
-    //                     ))}
-    //                 </List>
-    //                 <Divider />
-    //                 <List>
-    //                     {['All mail', 'Trash', 'Spam'].map((text, index) => (
-    //                         <ListItem key={text} disablePadding>
-    //                             <ListItemButton>
-    //                                 <ListItemIcon>
-    //                                     {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-    //                                 </ListItemIcon>
-    //                                 <ListItemText primary={text} />
-    //                             </ListItemButton>
-    //                         </ListItem>
-    //                     ))}
-    //                 </List>
-    //             </Box>
-    //         </Drawer>
-    //     </Box>
-    // )
 
     const drawerWidth = 240;
-    const minHeight = 64;
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
 
@@ -153,6 +76,8 @@ export default function SideBar() {
         ...theme.mixins.toolbar,
         justifyContent: 'flex-end',
     }));
+
+
 
     return (
 

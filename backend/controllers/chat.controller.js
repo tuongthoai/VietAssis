@@ -2,8 +2,8 @@ const chatService = require("../services/chat.service");
 
 exports.createNewMessage = async (req, res) => {
   try {
-    const { prompt } = req.body;
-    const resData = await chatService.createNewMessage(prompt);
+    const { history, prompt } = req.body;
+    const resData = await chatService.createNewMessage(history, prompt);
     return res.json(resData);
   } catch (error) {
     console.log(error);

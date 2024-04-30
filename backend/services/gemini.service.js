@@ -7,10 +7,11 @@ dotenv.config();
 const genAI = new GoogleGenerativeAI(process.env.KEY_API_GEMINI);
 const modelGemini = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-
-exports.answerGemini = async (prompt, messageId) => {
+exports.answerGemini = async (history, prompt, messageId) => {
   const io = await getIo();
+  console.log(history);
   const chatGemini = modelGemini.startChat({
+    history: history,
     generationConfig: {
       temperature: 0.9,
       topP: 1,
@@ -30,6 +31,7 @@ exports.answerGemini = async (prompt, messageId) => {
           answer: answer,
           messageId: messageId,
         });
+        console.log(answer);
       }
     } catch (e) {
       console.error(e);

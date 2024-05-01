@@ -1,0 +1,76 @@
+{
+    "prompt": [
+        {
+            "id": "1",
+            "name": "Dịch & tóm tắt nội dung",
+            "content": "Dịch và tóm tắt nội dung bên dưới sang tiếng việt \n [Content]",
+            "isFavorite": 0
+        },
+        {
+            "id": "2",
+            "name": "Dịch sang tiếng việt",
+            "content": "Dịch nội dung bên dưới sang tiếng việt",
+            "isFavorite": 0
+        },
+        {
+            "id": "3",
+            "name": "Tóm tắt tiểu sử",
+            "content": "Tóm tắt tiểu sử của \n [nhân vật]",
+            "isFavorite": 0
+        },
+        {
+            "id": "4",
+            "name": "Ý tưởng video Youtube",
+            "content": "Viết danh sách 5 ý tưởng video YouTube cho \n [sản phẩm hoặc công ty của bạn].",
+            "isFavorite": 0
+        },
+        {
+            "id": "5",
+            "name": "Bài đăng social network cho sản phẩm",
+            "content": "Tạo một bài đăng trên truyền thông xã hội dành cho [đối tượng cụ thể] và giải thích cách sản phẩm [tên sản phẩm] của chúng tôi có thể giúp họ.",
+            "isFavorite": 0
+        },
+        {
+            "id": "6",
+            "name": "Bài thuyết trình start up",
+            "content": "Tôi cần chuẩn bị một bài thuyết trình cho một nhà đầu tư tiềm năng về <chủ đề thuyết trình>. Bạn có thể cho tôi một số hướng dẫn về những gì để bao gồm?",
+            "isFavorite": 0
+        },
+        {
+            "id": "7",
+            "name": "Đề xuất instagram/facebook",
+            "content": "Đề xuất 5 cách sáng tạo để sử dụng Instagram Reels cho [sản phẩm hoặc dịch vụ hoặc công ty của bạn].",
+            "isFavorite": 0
+        },
+        {
+            "id": "8",
+            "name": "Lợi ích sử dụng sản phẩm",
+            "content": "Đăng một bài viết giới thiệu lợi ích của việc sử dụng sản phẩm [tên sản phẩm] cho [vấn đề cụ thể].",
+            "isFavorite": 0
+        },
+        {
+            "id": "9",
+            "name": "Kịch bản quảng cáo",
+            "content": "Viết một kịch bản quảng cáo dài một phút về [sản phẩm hoặc dịch vụ hoặc công ty].",
+            "isFavorite": 0
+        },
+        {
+            "id": "10",
+            "name": "Viết mail cho người tham gia hội thảo",
+            "content": "Viết email tiếp theo dành cho những người đã tham gia hội thảo trực tuyến của tôi về [chủ đề hội thảo].",
+            "isFavorite": 0
+        },
+        {
+            "id": "11",
+            "name": "Kế hoạch ra mắt sản phẩm",
+            "content": "Tạo một kế hoạch chiến dịch [truyền thông xã hội] để ra mắt [sản phẩm của bạn], hướng đến [đối tượng mục tiêu của bạn].",
+            "isFavorite": 0
+        },
+        {
+            "id": "12",
+            "name": "Làm sao có backlinks SEO",
+            "content": "Làm sao tôi có thể có được backlinks chất lượng cao để nâng cao SEO cho [Tên website]?",
+            "isFavorite": 0
+        }
+    ]
+}

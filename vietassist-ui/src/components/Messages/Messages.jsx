@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Box, Stack } from '@mui/material'
-import { EmptyMessage, TextMsg, Timeline } from './MessageType';
+import { EmptyMessage, Loader, TextMsg, Timeline } from './MessageType';
 
 export default function Messages({ chatHistory }) {
     return (
@@ -27,6 +27,8 @@ export default function Messages({ chatHistory }) {
 
                         case "empty":
                             return <EmptyMessage />
+                        case "loader":
+                            return <Loader />
                         default:
                             return <></>
                     }

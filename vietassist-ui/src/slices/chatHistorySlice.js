@@ -23,21 +23,17 @@ const chatHistorySlice = createSlice({
             state.value = action.payload;
         },
         replaceLastResponseMsg: (state, action) => {
-            console.log(action.payload);
-            console.log(JSON.stringify(state.value));
-            console.log(state.currentPos);
             const updatedHistory = [...state.value];
             updatedHistory[state.currentPos] = {
                 ...updatedHistory[state.currentPos],
                 isLoading: false,
             }
             state.value = updatedHistory;
-            console.log('afterupdate\n', JSON.stringify(state.value));
         }
 
     }
 });
 
-export const { addToChatHistory, updateCurrentPos, updateChatHistory, replaceLastResponseMsg } = chatHistorySlice.actions
+export const { addToChatHistory, updateCurrentPos, updateChatHistory, replaceLastResponseMsg } = chatHistorySlice.actions;
 
-export default chatHistorySlice.reducer
+export default chatHistorySlice.reducer;

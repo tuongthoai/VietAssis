@@ -1,6 +1,6 @@
 import {
     Box, IconButton, InputAdornment, Stack, TextField,
-    Toolbar, Typography, Modal, Card, CardContent,
+    Typography, Modal, Card, CardContent,
     CardActions, Button, Grid, Chip
 } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
@@ -17,13 +17,13 @@ import data from '../../data/vietassist.json'
 import axios from 'axios'
 import io from "socket.io-client";
 import { useDispatch, useSelector } from 'react-redux';
-import { addToChatHistory, replaceLastResponseMsg, setToNotLoading, updateChatHistory, updateCurrentPos } from '../../slice';
+import { addToChatHistory, replaceLastResponseMsg, updateChatHistory, updateCurrentPos } from '../../slices/chatHistorySlice';
+import { addToChatDataHistory } from '../../slices/chatDataSlice';
 
 const ENDPOINT = "http://localhost:3001"; // Địa chỉ máy chủ backend
 
 
 export default function Conversation() {
-    // const [chatHistory, setChatHistory] = useState([]);
     const [newMessage, setNewMessage] = useState('');
 
     const chatWindowRef = useRef(null);
@@ -31,22 +31,16 @@ export default function Conversation() {
 
     const [openPrompt, setOpenPrompt] = useState(false);
     const [prompt, setPrompt] = useState([]);
-    const [currentPrompt, setCurrentPrompt] = useState({});
+    const [currentPrompt, setCurrentPrompt] = useState(null);
 
     const [responseMessage, setResopnseMessage] = useState("");
-    const [currentPos, setCurrentPos] = useState(0);
     const [completeAnswer, setCompleteAnswer] = useState("");
 
     const temp = useSelector(state => state.chatHistory.value);
     const currentPos_tmp = useSelector(state => state.chatHistory.currentPos);
     const dispatch = useDispatch();
 
-    const emptyMsg = {
-        type: "empty",
-    }
-
     const triggerData = (msg) => {
-        // console.log(msg.answer);
         const answer_temp = msg.answer;
         setResopnseMessage(answer_temp);
         if (msg.completeAnswer !== null && msg.completeAnswer !== "") {
@@ -65,6 +59,12 @@ export default function Conversation() {
 
         if (completeAnswer !== '' && typeof completeAnswer !== 'undefined') {
             dispatch(replaceLastResponseMsg(resMessage));
+            // update model response message
+            const modelResponse = {
+                "role": "model",
+                "parts": [{ "text": completeAnswer }]
+            }
+            dispatch(addToChatDataHistory(modelResponse));
         }
 
     }, [completeAnswer])
@@ -81,7 +81,7 @@ export default function Conversation() {
 
     useEffect(() => {
         scrollToBottom();
-        console.log("temp \n", temp);
+        // console.log("temp \n", temp);
     }, [temp])
 
     useEffect(() => {
@@ -94,9 +94,6 @@ export default function Conversation() {
         };
 
         if (resMessage.message !== "") {
-            console.log(currentPos_tmp);
-            console.log('chathis\n', temp);
-            // console.log(temp[currentPos_tmp]);
             if (typeof temp[currentPos_tmp] === 'undefined') {
                 dispatch(addToChatHistory(resMessage));
             } else {
@@ -104,7 +101,6 @@ export default function Conversation() {
                 updatedHistory[currentPos_tmp] = resMessage;
                 dispatch(updateChatHistory(updatedHistory));
             }
-            // console.log(chatHistory);
         }
     }, [responseMessage]);
 
@@ -128,8 +124,9 @@ export default function Conversation() {
 
     const minHeight = 64;
 
+    const chatDataHistory = useSelector(state => state.chatData.history);
+
     const handleSendMessage = async () => {
-        // setCurrentPos(chatHistory.length + 1);
         dispatch(updateCurrentPos(temp.length + 1));
 
         if (newMessage.trim() !== "") {
@@ -140,21 +137,39 @@ export default function Conversation() {
                 outgoing: true
             };
             setNewMessage("");
-            // setChatHistory([...chatHistory, newMsg]);
             dispatch(addToChatHistory(newMsg));
-
             textFieldRef.current.focus();
         }
 
-        const body = {
-            "prompt": newMessage
+        // const body = {
+        //     "prompt": newMessage
+        // }
+
+        // new body
+        let prompt = "";
+        if (currentPrompt !== null) {
+            prompt = currentPrompt.content + " " + newMessage;
+        } else {
+            prompt = newMessage;
         }
+        const body = {
+            "history": chatDataHistory,
+            "prompt": prompt,
+        }
+        console.log(body);
         try {
             const response = await axios.post("http://localhost:3001/api/chat/create", body);
         }
         catch (error) {
             console.log(error);
         }
+
+
+        const userChat = {
+            "role": "user",
+            "parts": [{ "text": newMessage }]
+        }
+        dispatch(addToChatDataHistory(userChat));
     }
     const theme = useTheme();
     const scrollToBottom = () => {
@@ -174,6 +189,13 @@ export default function Conversation() {
         setCurrentPrompt(p);
         setOpenPrompt(false);
     }
+
+    // useEffect(() => {
+    //     console.log(currentPrompt);
+    //     if (currentPrompt === null) {
+    //         console.log("null");
+    //     } else console.log('not null');
+    // }, [currentPrompt]);
 
     const renderPrompts = () => {
         const prompts = []
@@ -239,11 +261,11 @@ export default function Conversation() {
                     backgroundColor: "#F8FAFF",
                     boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
                 }}>
-                {currentPrompt.name && (
+                {currentPrompt !== null && (
                     <Chip
                         sx={{ marginBottom: '10px', backgroundColor: amber[200] }}
                         label={currentPrompt.name}
-                        onDelete={() => setCurrentPrompt({})}
+                        onDelete={() => setCurrentPrompt(null)}
                     />
                 )}
                 <Stack direction="row" alignItems={"center"} spacing={3}>

@@ -60,7 +60,7 @@ const EmptyMessage = () => {
     return (
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <Stack direction={'column'} alignItems={'center'}>
-                <img src='AIimage.jpg' width={'400px'} style={{ borderRadius: '20px' }} />
+                <img src='AIimage.jpg' width={'400px'} style={{ borderRadius: '20px' }} alt='AIimage' />
                 <Typography textAlign={'center'} pt={3} fontSize={'70px'} color={blue[900]} fontWeight={'bold'} letterSpacing={2}>
                     Welcome to VietAssist!
                 </Typography>

@@ -1,11 +1,13 @@
 
 // use redux slice ----------------------------------------------------------------------------------------
 import { configureStore } from "@reduxjs/toolkit";
-import chatHistoryReducer from "./slice";
+import chatHistoryReducer from "./slices/chatHistorySlice";
+import chatDataReducer from './slices/chatDataSlice';
 
 export const store = configureStore({
     reducer: {
         chatHistory: chatHistoryReducer,
+        chatData: chatDataReducer,
     }
 });
 

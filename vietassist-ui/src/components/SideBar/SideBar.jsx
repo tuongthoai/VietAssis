@@ -1,5 +1,5 @@
 import {
-    AppBar, Box, Button, CssBaseline, Divider, Drawer, IconButton, List,
+    Box, CssBaseline, Divider, Drawer, IconButton, List,
     ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar,
     Typography
 } from '@mui/material'
@@ -9,7 +9,7 @@ import MailIcon from '@mui/icons-material/Mail'; // Import Mail icon
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { blue, grey, lightBlue } from '@mui/material/colors'
+import { blue } from '@mui/material/colors'
 import { styled, useTheme } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
 import Conversation from '../Conversation/Conversation';
@@ -95,7 +95,7 @@ export default function SideBar() {
                         <MenuOpenIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Persistent drawer
+                        VietAssit - Your Virtual Vietnamese Assistant
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -144,7 +144,7 @@ export default function SideBar() {
                     ))}
                 </List>
             </Drawer>
-            <Main open={open} sx={{ bgcolor: blue[100] }}>
+            <Main open={open} sx={{ bgcolor: blue[50] }}>
                 <DrawerHeader />
                 <Conversation />
             </Main>

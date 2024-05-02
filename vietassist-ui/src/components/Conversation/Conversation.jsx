@@ -4,15 +4,17 @@ import {
     CardActions, Button, Grid, Chip
 } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
 import SendIcon from '@mui/icons-material/Send';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+import LoadingButton from '@mui/lab/LoadingButton';
 import './Conversation.css'
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import { useTheme } from '@emotion/react';
 import Messages from '../Messages/Messages';
-import { blue, lightBlue, grey, red, yellow, amber } from '@mui/material/colors'
+import { blue, lightBlue, grey, red, yellow, amber, indigo } from '@mui/material/colors'
 import data from '../../data/vietassist.json'
 import axios from 'axios'
 import io from "socket.io-client";
@@ -35,6 +37,8 @@ export default function Conversation() {
 
     const [responseMessage, setResopnseMessage] = useState("");
     const [completeAnswer, setCompleteAnswer] = useState("");
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const temp = useSelector(state => state.chatHistory.value);
     const currentPos_tmp = useSelector(state => state.chatHistory.currentPos);
@@ -64,6 +68,7 @@ export default function Conversation() {
                 "role": "model",
                 "parts": [{ "text": completeAnswer }]
             }
+            setIsLoading(false);
             dispatch(addToChatDataHistory(modelResponse));
         }
 
@@ -127,7 +132,14 @@ export default function Conversation() {
     const chatDataHistory = useSelector(state => state.chatData.history);
 
     const handleSendMessage = async () => {
+
+        if (newMessage.trim() === "") {
+            return;
+        }
+
         dispatch(updateCurrentPos(temp.length + 1));
+
+        setIsLoading(true);
 
         if (newMessage.trim() !== "") {
             const newMsg = {
@@ -239,6 +251,7 @@ export default function Conversation() {
 
     const handleItemClick = async (message) => {
         dispatch(updateCurrentPos(temp.length + 1));
+        setIsLoading(true);
         if (message.trim() !== "") {
             const newMsg = {
                 type: "msg",
@@ -277,7 +290,7 @@ export default function Conversation() {
 
 
     return (
-        <Stack sx={{ backgroundColor: blue[100], width: '100%', height: `calc(100vh - ${minHeight}px)` }}>
+        <Stack sx={{ backgroundColor: indigo[100], width: '100%', height: `calc(100vh - ${minHeight}px)` }}>
             {/* <Toolbar /> */}
             <Box
                 id='chat-window'
@@ -302,34 +315,49 @@ export default function Conversation() {
                         onDelete={() => setCurrentPrompt(null)}
                     />
                 )}
-                <Stack direction="row" alignItems={"center"} spacing={3}>
-                    <TextField
-                        fullWidth
-                        id="outlined-basic"
-                        label="Ask me something..."
-                        variant="outlined"
-                        InputProps={{
-                            endAdornment:
-                                <InputAdornment>
-                                    <IconButton color='warning' onClick={() => setOpenPrompt(true)}>
-                                        <DocumentScannerIcon />
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.75 }}>
+                    <Stack direction="row" alignItems={"center"} spacing={3}>
+                        <TextField
+                            fullWidth
+                            id="outlined-basic"
+                            label="Ask me something..."
+                            variant="outlined"
+                            InputProps={{
+                                endAdornment:
+                                    <InputAdornment>
+                                        <IconButton color='warning' onClick={() => setOpenPrompt(true)}>
+                                            <DocumentScannerIcon />
+                                        </IconButton>
+                                    </InputAdornment>
+                            }}
+                            value={newMessage}
+                            onChange={e => { setNewMessage(e.target.value) }}
+                            onKeyPress={handleEnterPress}
+                            ref={textFieldRef}
+                            autoComplete='off'
+                        />
+                        {/* <Box sx={{ height: 48, width: 48, borderRadius: 2.0, backgroundColor: theme.palette.primary.main }}>
+                                <Stack sx={{ height: '100%', width: '100%' }} alignItems={'center'} justifyContent={'center'}>
+                                    <IconButton onClick={handleSendMessage} >
+                                        <SendIcon sx={{ color: blue[50] }} />
                                     </IconButton>
-                                </InputAdornment>
-                        }}
-                        value={newMessage}
-                        onChange={e => { setNewMessage(e.target.value) }}
-                        onKeyPress={handleEnterPress}
-                        ref={textFieldRef}
-                        autoComplete='off'
-                    />
-                    <Box sx={{ height: 48, width: 48, borderRadius: 2.0, backgroundColor: theme.palette.primary.main }}>
-                        <Stack sx={{ height: '100%', width: '100%' }} alignItems={'center'} justifyContent={'center'}>
-                            <IconButton onClick={handleSendMessage} >
-                                <SendIcon sx={{ color: blue[50] }} />
-                            </IconButton>
-                        </Stack>
-                    </Box>
-                </Stack>
+                                </Stack>
+                            </Box> */}
+                        <LoadingButton
+                            onClick={handleSendMessage}
+                            endIcon={<SendIcon />}
+                            loading={isLoading}
+                            loadingPosition="end"
+                            variant="contained"
+                            size='large'
+                        >
+                            <span>Send</span>
+                        </LoadingButton>
+                    </Stack>
+                </motion.div>
             </Box>
 
 
@@ -347,29 +375,9 @@ export default function Conversation() {
                             spacing={3}
                             justifyContent={'flex-start'}
                             alignItems={'center'}>
-                            <Typography sx={{ fontSize: '30px', fontWeight: 'bold' }}>
+                            <Typography sx={{ fontSize: '40px', fontWeight: 'bold' }}>
                                 Prompts
                             </Typography>
-                            <TextField
-                                id="outlined-basic"
-                                label="Tìm kiếm prompt..."
-                                variant="outlined"
-                                size='small'
-                                sx={{ width: '30%' }}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position='end'>
-                                            <IconButton disabled>
-                                                <SearchIcon />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    )
-                                }} />
-
-                            <Button
-                                variant="outlined"
-                                color='info'
-                            >Prompts yêu thích</Button>
                         </Stack>
                         <Button
                             variant='outlined'

@@ -1,10 +1,14 @@
 import React from 'react'
 import {
     Stack, Divider, Typography, Box, Skeleton,
-    Avatar
+    Avatar,
+    styled,
+    Paper,
+    Grid
 } from '@mui/material'
-import { blue, grey } from '@mui/material/colors'
+import { blue, grey, indigo } from '@mui/material/colors'
 import ReactMarkdown from 'react-markdown'
+import { motion } from 'framer-motion'
 
 const TextMsg = ({ e }) => {
     return (
@@ -79,4 +83,81 @@ const Loader = () => {
     )
 }
 
-export { Timeline, TextMsg, EmptyMessage, Loader }
+
+const Item = ({ onClick, message }) => {
+    return (
+        <Paper
+            onClick={() => onClick(message)}
+            sx={{
+                backgroundColor: indigo[700],
+                padding: '14px',
+                textAlign: 'center',
+                color: indigo[50],
+                transition: '0.2s',
+                boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)',
+                '&:hover': {
+                    backgroundColor: indigo[400],
+                    boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.5)',
+                },
+                cursor: 'pointer'
+            }}>
+            {message}
+        </Paper>
+    )
+}
+
+
+
+const SuggestMessage = ({ handleItemClick }) => {
+    const onItemClick = (message) => {
+        handleItemClick(message);
+    }
+
+    const messages = [
+        "Làm sao để duy trì một lối sống lành mạnh và cân đối?",
+        "Làm sao để quản lý thời gian hiệu quả hơn trong công việc và cuộc sống?",
+        "Làm sao để tìm kiếm động lực khi cảm thấy mất hứng thú?",
+        "Làm sao để xây dựng mối quan hệ tốt hơn với người thân và bạn bè?"
+    ]
+
+    return (
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <Stack direction={'column'} alignItems={'left'} spacing={6}>
+                <Box sx={{ width: '100%', maxWidth: '600px', height: '300px', paddingTop: '50px' }}>
+                    <motion.div
+                        initial={{ opacity: 0, x: +100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.75 }}
+                        style={{
+                            background: `-webkit-linear-gradient(left, #000046, #1cb5e0)`,
+                            WebkitBackgroundClip: 'text',
+                            color: 'transparent',
+                            display: 'inline-block'
+                        }}
+                    >
+                        <Typography variant='h2' fontSize={'80px'} fontWeight={'bold'}>Welcome To VietAssist !</Typography>
+                        <Typography variant='h5' marginTop={'20px'}>How can I help you ?</Typography>
+                    </motion.div>
+                </Box>
+                <Box sx={{ width: '700px', marginTop: '20px' }}>
+                    <Grid container spacing={1.5}>
+                        {messages.map((message, index) => (
+                            <Grid item xs={6} key={index}>
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.25, delay: index * 0.05 }}>
+                                    <Item onClick={onItemClick} message={message} />
+                                </motion.div>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
+            </Stack>
+        </Box>
+    )
+}
+
+export { Timeline, TextMsg, EmptyMessage, Loader, SuggestMessage }
+
+

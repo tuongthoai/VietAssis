@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const emptyMsg = {
-    type: "empty",
+    type: "suggest",
 }
 
 const initialState = {

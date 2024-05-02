@@ -83,7 +83,7 @@ export default function SideBar() {
 
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
+            <AppBar position="fixed" open={open} sx={{ background: 'linear-gradient(45deg, #000046, #1CB5E0)' }}>
                 <Toolbar>
                     <IconButton
                         color="inherit"

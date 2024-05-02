@@ -1,8 +1,8 @@
 import React from 'react'
 import { Box, Stack } from '@mui/material'
-import { EmptyMessage, Loader, TextMsg, Timeline } from './MessageType';
+import { EmptyMessage, Loader, SuggestMessage, TextMsg, Timeline } from './MessageType';
 
-export default function Messages({ chatHistory }) {
+export default function Messages({ chatHistory, handleItemClick }) {
     return (
         <Box p={3}>
             <Stack spacing={3}>
@@ -29,6 +29,8 @@ export default function Messages({ chatHistory }) {
                             return <EmptyMessage />
                         case "loader":
                             return <Loader />
+                        case "suggest":
+                            return <SuggestMessage handleItemClick={handleItemClick} />
                         default:
                             return <></>
                     }

@@ -190,12 +190,6 @@ export default function Conversation() {
         setOpenPrompt(false);
     }
 
-    // useEffect(() => {
-    //     console.log(currentPrompt);
-    //     if (currentPrompt === null) {
-    //         console.log("null");
-    //     } else console.log('not null');
-    // }, [currentPrompt]);
 
     const renderPrompts = () => {
         const prompts = []
@@ -243,6 +237,44 @@ export default function Conversation() {
         setPrompt(updatedPrompts);
     }
 
+    const handleItemClick = async (message) => {
+        dispatch(updateCurrentPos(temp.length + 1));
+        if (message.trim() !== "") {
+            const newMsg = {
+                type: "msg",
+                message: message,
+                incoming: false,
+                outgoing: true
+            };
+            setNewMessage("");
+            dispatch(addToChatHistory(newMsg));
+            textFieldRef.current.focus();
+        }
+
+        let prompt = "";
+        if (currentPrompt !== null) {
+            prompt = currentPrompt.content + " " + message;
+        } else {
+            prompt = message;
+        }
+        const body = {
+            "history": chatDataHistory,
+            "prompt": prompt,
+        }
+        console.log(body);
+        try {
+            const response = await axios.post("http://localhost:3001/api/chat/create", body);
+        }
+        catch (error) {
+            console.log(error);
+        }
+        const userChat = {
+            "role": "user",
+            "parts": [{ "text": message }]
+        }
+        dispatch(addToChatDataHistory(userChat));
+    }
+
 
     return (
         <Stack sx={{ backgroundColor: blue[100], width: '100%', height: `calc(100vh - ${minHeight}px)` }}>
@@ -250,9 +282,10 @@ export default function Conversation() {
             <Box
                 id='chat-window'
                 ref={chatWindowRef}
-                sx={{ overflowY: 'scroll', height: '100%' }}>
+                sx={{ overflowY: 'scroll', height: '100%', paddingInline: '40px' }}>
                 <Messages
-                    chatHistory={temp} />
+                    chatHistory={temp}
+                    handleItemClick={handleItemClick} />
             </Box>
             <Box
                 p={2}
@@ -260,10 +293,11 @@ export default function Conversation() {
                     width: '100%',
                     backgroundColor: "#F8FAFF",
                     boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+                    paddingInline: '150px'
                 }}>
                 {currentPrompt !== null && (
                     <Chip
-                        sx={{ marginBottom: '10px', backgroundColor: amber[200] }}
+                        sx={{ marginBottom: '15px', backgroundColor: amber[200] }}
                         label={currentPrompt.name}
                         onDelete={() => setCurrentPrompt(null)}
                     />

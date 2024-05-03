@@ -38,7 +38,7 @@ const TextMsg = ({ e }) => {
       >
         {e.incoming === false ? (
           <Typography variant="body2" color={e.incoming ? grey[900] : grey[50]}>
-            {e.message}
+            <ReactMarkdown>{e.message}</ReactMarkdown>
           </Typography>
         ) : (
           <>
@@ -160,7 +160,7 @@ const SuggestMessage = ({ handleItemClick }) => {
   };
 
   const messages = [
-    "Lên một kịch bản video ngắn để quảng bá sản phẩm nước hoa",
+    "Lên một kịch bản video ngắn để quảng bá sản phẩm đông trùng hạ thảo",
     "Viết một email trả lời cho ứng viên xin việc với nội dung chuyên nghiệp",
     "Lên kế hoạch học tiếng Anh trong 3 tháng tới",
     "Viết một email với mong muốn giảng viên thực hiện việc dạy online",

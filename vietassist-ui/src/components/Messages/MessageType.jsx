@@ -2,7 +2,6 @@ import React from 'react'
 import {
     Stack, Divider, Typography, Box, Skeleton,
     Avatar,
-    styled,
     Paper,
     Grid
 } from '@mui/material'

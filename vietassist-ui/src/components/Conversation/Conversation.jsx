@@ -7,14 +7,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import SendIcon from '@mui/icons-material/Send';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import LoadingButton from '@mui/lab/LoadingButton';
 import './Conversation.css'
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
-import { useTheme } from '@emotion/react';
 import Messages from '../Messages/Messages';
-import { blue, lightBlue, grey, red, yellow, amber, indigo } from '@mui/material/colors'
+import { blue, grey, red, amber, indigo } from '@mui/material/colors'
 import data from '../../data/vietassist.json'
 import axios from 'axios'
 import io from "socket.io-client";
@@ -183,7 +181,6 @@ export default function Conversation() {
         }
         dispatch(addToChatDataHistory(userChat));
     }
-    const theme = useTheme();
     const scrollToBottom = () => {
         if (chatWindowRef.current) {
             chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;

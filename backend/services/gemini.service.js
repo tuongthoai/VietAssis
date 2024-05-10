@@ -26,7 +26,7 @@ exports.answerGemini = async (history, prompt, messageId) => {
       const item = payload.text();
       if (item) {
         answer += item;
-        console.log(answer)
+        console.log(answer);
         io.emit("objectEmit", {
           answer: answer,
           messageId: messageId,
@@ -41,5 +41,5 @@ exports.answerGemini = async (history, prompt, messageId) => {
     answer: "",
     messageId: messageId,
     completeAnswer: answer,
-  })
+  });
 };
